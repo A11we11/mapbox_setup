@@ -48,10 +48,14 @@ const STYLE_OPTIONS: StyleOption[] = [
   },
 ];
 
-export default function MapStyles() {
-  const map = useRef<mapboxgl.Map | null>(null);
-  const [activeStyle, setActiveStyle] = useState("streets-v12");
+interface MapControlsProps {
+  map: mapboxgl.Map | null;
+}
 
+export default function MapStyles({ map }: MapControlsProps) {
+  /*  const map = useRef<mapboxgl.Map | null>(null); */
+  const [activeStyle, setActiveStyle] = useState("streets-v12");
+  /* 
   useEffect(() => {
     map.current = new mapboxgl.Map({
       container: "map",
@@ -60,10 +64,15 @@ export default function MapStyles() {
       zoom: 2,
     });
   }, []);
-
-  const handleChange = (value: string) => {
+ */
+  /*  const handleChange = (value: string) => {
     if (!map.current) return;
     map.current.setStyle(`mapbox://styles/mapbox/${value}`);
+    setActiveStyle(value);
+  }; */
+  const handleChange = (value: string) => {
+    if (!map) return;
+    map.setStyle(`mapbox://styles/mapbox/${value}`);
     setActiveStyle(value);
   };
   /* 

@@ -28,7 +28,7 @@ export default function Home() {
         <>
           <MapControls map={map} />
           <MapSearch map={map} />
-          <MapStyles />
+          <MapStyles map={map} />
 
           {/* Example markers */}
           <MapMarker
