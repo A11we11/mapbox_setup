@@ -2,8 +2,10 @@
 import MapControls from "@/components/maps/MapControls";
 import MapMarker from "@/components/maps/MapMarker";
 import MapSearch from "@/components/maps/MapSearch";
+import MapStyles from "@/components/maps/MapStyles";
 import { useMapbox } from "@/hooks/useMapbox";
 import dynamic from "next/dynamic";
+import "mapbox-gl/dist/mapbox-gl.css";
 
 // Dynamically import to avoid SSR issues
 const Map = dynamic(() => import("@/components/maps/Map"), {
@@ -26,6 +28,7 @@ export default function Home() {
         <>
           <MapControls map={map} />
           <MapSearch map={map} />
+          <MapStyles />
 
           {/* Example markers */}
           <MapMarker
