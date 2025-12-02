@@ -33,12 +33,22 @@ export default function MapMarker({
       .addTo(map);
 
     // Add popup if provided
+
     if (popup) {
+      // --- CRUCIAL CHANGE HERE: Add the custom className option ---
+      const mapPopup = new mapboxgl.Popup({
+        offset: 25,
+        className: "mapboxgl-custom-popup", // Add your custom class
+      }).setHTML(typeof popup === "string" ? popup : "");
+      markerRef.current.setPopup(mapPopup);
+    }
+
+    /*  if (popup) {
       const mapPopup = new mapboxgl.Popup({ offset: 25 }).setHTML(
         typeof popup === "string" ? popup : ""
       );
       markerRef.current.setPopup(mapPopup);
-    }
+    } */
 
     // Handle drag end
 

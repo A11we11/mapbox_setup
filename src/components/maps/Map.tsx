@@ -1,4 +1,5 @@
 "use client";
+
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
@@ -13,7 +14,7 @@ interface MapProps {
 }
 
 export default function Map({
-  initialCenter = [-74.5, 40],
+  initialCenter = [3.3792, 6.5244],
   initialZoom = 9,
   onMapLoad,
 }: MapProps) {

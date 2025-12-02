@@ -1,44 +1,61 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 
 interface MapControlsProps {
   map: mapboxgl.Map | null;
 }
+
 export default function MapControls({ map }: MapControlsProps) {
+  const navRef = useRef<mapboxgl.NavigationControl | null>(null);
+  const fullscreenRef = useRef<mapboxgl.FullscreenControl | null>(null);
+  const geolocateRef = useRef<mapboxgl.GeolocateControl | null>(null);
+  const scaleRef = useRef<mapboxgl.ScaleControl | null>(null);
+
   useEffect(() => {
     if (!map) return;
-    // Navigation controls (zoom, rotate)
-    const nav = new mapboxgl.NavigationControl();
-    map.addControl(nav, "bottom-right");
+    const handleLoad = () => {
+      // Create controls once
+      navRef.current = new mapboxgl.NavigationControl();
+      fullscreenRef.current = new mapboxgl.FullscreenControl();
+      geolocateRef.current = new mapboxgl.GeolocateControl({
+        positionOptions: {
+          enableHighAccuracy: true,
+        },
+        trackUserLocation: true,
+        showUserHeading: true,
+      });
+      scaleRef.current = new mapboxgl.ScaleControl({
+        maxWidth: 80,
+        unit: "metric",
+      });
 
-    // Fullscreen control
-    const fullscreen = new mapboxgl.FullscreenControl();
-    map.addControl(fullscreen, "bottom-right");
+      // Add controls
+      map.addControl(navRef.current, "bottom-right");
+      map.addControl(fullscreenRef.current, "bottom-right");
+      map.addControl(geolocateRef.current, "bottom-right");
+      map.addControl(scaleRef.current, "bottom-left");
+    };
 
-    // Geolocation control
-    const geolocate = new mapboxgl.GeolocateControl({
-      positionOptions: {
-        enableHighAccuracy: true,
-      },
-      trackUserLocation: true,
-      showUserHeading: true,
-    });
-    map.addControl(geolocate, "bottom-right");
+    // Ensure controls are added only when map is fully ready
+    if (map.loaded()) handleLoad();
+    else map.on("load", handleLoad);
 
-    //scale control
-    const scale = new mapboxgl.ScaleControl({
-      maxWidth: 80,
-      unit: "metric",
-    });
-    map.addControl(scale, "bottom-left");
-
+    // Cleanup
     return () => {
-      map.removeControl(nav);
-      map.removeControl(fullscreen);
-      map.removeControl(geolocate);
-      map.removeControl(scale);
+      const controls = [
+        navRef.current,
+        fullscreenRef.current,
+        geolocateRef.current,
+        scaleRef.current,
+      ];
+
+      controls.forEach((control) => {
+        if (control && (control as any)._map) {
+          map.removeControl(control);
+        }
+      });
     };
   }, [map]);
 

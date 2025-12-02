@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
+import { useDebounce } from "@/hooks/useDebounce";
 
 interface MapSearchProps {
   map: mapboxgl.Map | null;
@@ -17,6 +18,7 @@ export default function MapSearch({ map }: MapSearchProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const debouncedQuery = useDebounce(query, 500);
 
   const searchPlaces = async (searchQuery: string) => {
     if (!searchQuery.trim()) {
@@ -41,6 +43,11 @@ export default function MapSearch({ map }: MapSearchProps) {
     }
   };
 
+  // --- New: Effect to call searchPlaces only when debouncedQuery changes ---
+  useEffect(() => {
+    searchPlaces(debouncedQuery);
+  }, [debouncedQuery]);
+
   const handleSelect = (result: SearchResult) => {
     if (!map) return;
     map.flyTo({ center: result.center, zoom: 14, duration: 2000 });
@@ -62,7 +69,7 @@ export default function MapSearch({ map }: MapSearchProps) {
           value={query}
           onChange={(e) => {
             setQuery(e.target.value);
-            searchPlaces(e.target.value);
+            // Removed: searchPlaces(e.target.value); is no longer called here
           }}
           placeholder="Search location..."
           className="w-full px-4 py-3 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"

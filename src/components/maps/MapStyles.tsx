@@ -84,7 +84,7 @@ export default function MapStyles({ map }: MapControlsProps) {
 
   return (
     <>
-      <div id="map" className="absolute inset-0" />
+      <div id="map" />
       <aside className="absolute bottom-4 left-4 z-10">
         <Tabs value={activeStyle} onValueChange={handleChange}>
           <TabsList className="bg-background shadow-lg">
