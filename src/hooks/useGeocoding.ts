@@ -1,6 +1,7 @@
 // hooks/useGeocoding.ts
 import { useState, useCallback } from "react";
 import mapboxgl from "mapbox-gl";
+import { useDebounce } from "./useDebounce";
 
 export interface GeocodingFeature {
   id: string;
@@ -14,19 +15,13 @@ export interface GeocodingFeature {
   place_type: string[];
 }
 
-/**
- * useGeocoding Hook
- *
- * PURPOSE: Handles location search with Mapbox Geocoding API
- * FEATURES:
- * - Error handling
- * - Loading states
- * - Request cancellation
- * - Type-safe responses
- */
 export function useGeocoding() {
+  const [query, setQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [results, setResults] = useState<GeocodingFeature[]>([]);
+  const debouncedQuery = useDebounce(query, 500);
 
   const searchLocations = useCallback(
     async (query: string): Promise<GeocodingFeature[]> => {

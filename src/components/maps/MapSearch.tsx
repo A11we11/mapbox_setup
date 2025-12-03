@@ -61,6 +61,7 @@ export default function MapSearch({ map }: MapSearchProps) {
     setQuery("");
     setResults([]);
   };
+
   return (
     <div className="absolute top-4 left-4 z-10 w-80">
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg">
